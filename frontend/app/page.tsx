@@ -28,7 +28,7 @@ export default function Home() {
             <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
               <Brain size={16} className="text-white" />
             </div>
-            <span className="font-display font-bold text-lg text-text-primary">HireIQ</span>
+            <span className="font-display font-bold text-lg text-text-primary">RecruitIQ</span>
             <span className="hidden sm:inline text-xs font-mono text-text-muted ml-1">AI Hiring Assistant</span>
           </div>
 

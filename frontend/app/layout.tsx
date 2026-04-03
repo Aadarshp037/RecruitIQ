@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "HireIQ — AI Hiring Assistant",
+  title: "RecruitIQ — AI Hiring Assistant",
   description: "AI-powered resume analysis, ATS scoring, and candidate evaluation",
 };
 
