@@ -1,9 +1,10 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Send, Bot, User, Loader2 } from "lucide-react";
+import { X, Send, Bot, User } from "lucide-react";
 import { sendChat } from "@/lib/api";
 import { ChatMessage } from "@/lib/types";
+import ReactMarkdown from "react-markdown";
 
 interface ChatModalProps {
   open: boolean;
@@ -30,7 +31,7 @@ export default function ChatModal({ open, onClose }: ChatModalProps) {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, loading]);
 
   const send = async (text?: string) => {
     const msg = text || input.trim();
@@ -83,37 +84,64 @@ export default function ChatModal({ open, onClose }: ChatModalProps) {
                 <X size={18} />
               </button>
             </div>
-
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-5">
               {messages.map((m, i) => (
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`flex gap-3 ${m.role === "user" ? "flex-row-reverse" : ""}`}
+                  className={`flex gap-3 items-start ${m.role === "user" ? "flex-row-reverse" : ""}`}
                 >
-                  <div className={`w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center text-xs
-                    ${m.role === "assistant" ? "bg-accent/20 text-accent" : "bg-muted text-text-secondary"}`}>
-                    {m.role === "assistant" ? <Bot size={13} /> : <User size={13} />}
-                  </div>
-                  <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed
-                    ${m.role === "assistant"
-                      ? "bg-card border border-border text-text-secondary rounded-tl-sm"
-                      : "bg-accent text-white rounded-tr-sm"}`}
+                  {/* Avatar */}
+                  <div className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center border text-xs shadow-sm transition-all duration-300
+                    ${m.role === "assistant" 
+                      ? "bg-accent/10 border-accent/20 text-accent hover:bg-accent/20" 
+                      : "bg-muted border-border text-text-secondary hover:text-text-primary"}`}
                   >
-                    {m.content}
+                    {m.role === "assistant" ? <Bot size={14} /> : <User size={14} />}
+                  </div>
+
+                  {/* Content Bubble */}
+                  <div className={`max-w-[78%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm break-words overflow-hidden transition-all duration-300
+                    ${m.role === "assistant"
+                      ? "bg-card border border-border text-text-secondary rounded-tl-sm hover:border-border/80"
+                      : "bg-gradient-to-r from-accent to-accent-light text-white rounded-tr-sm shadow-indigo-500/10 hover:shadow-indigo-500/20"}`}
+                  >
+                    {m.role === "assistant" ? (
+                      <div className="prose prose-invert prose-sm max-w-none text-text-secondary hover:text-text-primary leading-relaxed prose-headings:font-bold prose-headings:text-text-primary prose-a:text-accent-light prose-strong:text-text-primary">
+                        <ReactMarkdown>{m.content}</ReactMarkdown>
+                      </div>
+                    ) : (
+                      <p className="whitespace-pre-wrap">{m.content}</p>
+                    )}
                   </div>
                 </motion.div>
               ))}
 
               {loading && (
-                <div className="flex gap-3">
-                  <div className="w-7 h-7 rounded-lg bg-accent/20 flex items-center justify-center">
-                    <Bot size={13} className="text-accent" />
+                <div className="flex gap-3 items-start">
+                  <div className="w-8 h-8 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center text-xs">
+                    <Bot size={14} className="text-accent" />
                   </div>
-                  <div className="bg-card border border-border rounded-2xl rounded-tl-sm px-4 py-3">
-                    <Loader2 size={14} className="text-accent animate-spin" />
+                  <div className="bg-card border border-border rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm flex items-center justify-center min-h-[40px]">
+                    <div className="flex items-center gap-1.5 px-1 py-1">
+                      <motion.span
+                        animate={{ y: ["0px", "-6px", "0px"] }}
+                        transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut", delay: 0 }}
+                        className="w-2 h-2 rounded-full bg-accent"
+                      />
+                      <motion.span
+                        animate={{ y: ["0px", "-6px", "0px"] }}
+                        transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut", delay: 0.15 }}
+                        className="w-2 h-2 rounded-full bg-accent"
+                      />
+                      <motion.span
+                        animate={{ y: ["0px", "-6px", "0px"] }}
+                        transition={{ duration: 0.6, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
+                        className="w-2 h-2 rounded-full bg-accent"
+                      />
+                    </div>
                   </div>
                 </div>
               )}
@@ -137,7 +165,7 @@ export default function ChatModal({ open, onClose }: ChatModalProps) {
 
             {/* Input */}
             <div className="px-4 pb-4 pt-2 border-t border-border">
-              <div className="flex gap-2 bg-card border border-border rounded-xl overflow-hidden">
+              <div className="flex gap-2 bg-card border border-border rounded-xl overflow-hidden focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/15 transition-all duration-300">
                 <input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
