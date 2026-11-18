@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()  # loads .env file automatically
 
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
-MODEL = "llama-3.1-8b-instant"
+MODEL = "openai/gpt-oss-20b"
 
 
 def call_groq(system_prompt: str, user_prompt: str) -> str:

@@ -27,7 +27,7 @@
 
 ### 1. Clone the repo
 ```bash
-git clone https://github.com/yourusername/recruitiq.git
+git clone https://github.com/Aadarshp037/RecruitIQ.git
 cd recruitiq
 ```
 
